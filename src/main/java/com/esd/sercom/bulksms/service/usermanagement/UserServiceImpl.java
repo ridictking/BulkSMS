@@ -4,6 +4,7 @@ import com.esd.sercom.bulksms.dao.UserEntityRepo;
 import com.esd.sercom.bulksms.exceptions.BadRequestException;
 import com.esd.sercom.bulksms.exceptions.NotFoundException;
 import com.esd.sercom.bulksms.model.DTO.ChangePasswordDetails;
+import com.esd.sercom.bulksms.model.DTO.CreatePassword;
 import com.esd.sercom.bulksms.model.DTO.EmailModel;
 import com.esd.sercom.bulksms.model.DTO.UserDetails;
 import com.esd.sercom.bulksms.model.entity.UserEntity;
@@ -58,6 +59,14 @@ public class UserServiceImpl implements UserService{
         userEntityRepo.save(new UserEntity(user));
         userDetails.setPassword(null);
         return userDetails;
+    }
+
+    @Override
+    public void createPassword(CreatePassword password){
+        UserDetails user = this.getUser(password.getEmail());
+        if(user == null) throw new NotFoundException("User does not exist");
+        user.setPassword(password.getPassword());
+        this.updateUser(user);
     }
 
     @Override

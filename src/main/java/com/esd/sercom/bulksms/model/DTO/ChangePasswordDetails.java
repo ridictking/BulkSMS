@@ -1,8 +1,13 @@
 package com.esd.sercom.bulksms.model.DTO;
 
+import javax.validation.constraints.NotBlank;
+
 public class ChangePasswordDetails {
+    @NotBlank
     private String email;
+    @NotBlank
     private String oldPassword;
+    @NotBlank
     private String newPassword;
 
     public String getEmail() {
