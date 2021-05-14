@@ -51,4 +51,16 @@ public class UserController {
         UserDetails userDetails = userService.changePassword(changePasswordDetails);
         return new ResponseEntity<>(userDetails,HttpStatus.CREATED);
     }
+
+    @GetMapping("/get-user")
+    public ResponseEntity<UserDetails> getUser( @RequestParam String email){
+        UserDetails userDetails = userService.getUser(email);
+        return new ResponseEntity<>(userDetails,HttpStatus.OK);
+    }
+
+    @DeleteMapping("/deactivate-user")
+    public ResponseEntity<Void> deactivateUser(@RequestParam String email){
+        userService.deleteUser(email);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
