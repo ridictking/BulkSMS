@@ -35,7 +35,6 @@ public class UserServiceImpl implements UserService{
         //Check if User is present
         UserDetails user = this.getUser(userDetails.getEmail());
         if(user != null) throw new BadRequestException("User Already exist");
-
         UserEntity userToBeRegistered = new UserEntity(userDetails);
         userToBeRegistered.setCorrelationId(UUID.randomUUID().toString());
         UserEntity userEntity = userEntityRepo.save(userToBeRegistered);
@@ -55,7 +54,6 @@ public class UserServiceImpl implements UserService{
         if(user == null) throw new NotFoundException("User does not exist");
         if(StringUtils.hasText(userDetails.getPassword()))
             user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
-
         userEntityRepo.save(new UserEntity(user));
         userDetails.setPassword(null);
         return userDetails;
@@ -63,6 +61,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public void createPassword(CreatePassword password){
+        if(!password.getPassword().equals(password.getConfirmPassword())) throw new NotFoundException("Password doesn't match");
         UserDetails user = this.getUser(password.getEmail());
         if(user == null) throw new NotFoundException("User does not exist");
         user.setPassword(password.getPassword());
@@ -71,6 +70,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserDetails forgotPassword(String email) {
+        if(!StringUtils.hasText(email)) throw new BadRequestException("Please provide your email address");
         UserDetails user = this.getUser(email);
         if(user == null) throw new NotFoundException("User does not exist");
         String jwt = Utilities.createJWT(user.getEmail(),36000000,null);

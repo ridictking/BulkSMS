@@ -1,5 +1,6 @@
 package com.esd.sercom.bulksms.api;
 
+import com.esd.sercom.bulksms.model.DTO.ChangePasswordDetails;
 import com.esd.sercom.bulksms.model.DTO.CreatePassword;
 import com.esd.sercom.bulksms.model.DTO.UserDetails;
 import com.esd.sercom.bulksms.service.usermanagement.UserService;
@@ -34,8 +35,20 @@ public class UserController {
     }
 
     @PutMapping("/create-password")
-    public ResponseEntity<UserDetails> createPassword(@RequestBody CreatePassword password){
+    public ResponseEntity<UserDetails> createPassword(@Valid @RequestBody CreatePassword password){
         userService.createPassword(password);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<UserDetails> forgotPassword(@RequestParam String email){
+        userService.forgotPassword(email);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<UserDetails> changePassword(@Valid @RequestBody ChangePasswordDetails changePasswordDetails){
+        UserDetails userDetails = userService.changePassword(changePasswordDetails);
+        return new ResponseEntity<>(userDetails,HttpStatus.CREATED);
     }
 }
