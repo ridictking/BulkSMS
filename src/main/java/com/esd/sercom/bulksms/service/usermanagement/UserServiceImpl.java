@@ -3,10 +3,7 @@ package com.esd.sercom.bulksms.service.usermanagement;
 import com.esd.sercom.bulksms.dao.UserEntityRepo;
 import com.esd.sercom.bulksms.exceptions.BadRequestException;
 import com.esd.sercom.bulksms.exceptions.NotFoundException;
-import com.esd.sercom.bulksms.model.DTO.ChangePasswordDetails;
-import com.esd.sercom.bulksms.model.DTO.CreatePassword;
-import com.esd.sercom.bulksms.model.DTO.EmailModel;
-import com.esd.sercom.bulksms.model.DTO.UserDetails;
+import com.esd.sercom.bulksms.model.DTO.*;
 import com.esd.sercom.bulksms.model.entity.UserEntity;
 import com.esd.sercom.bulksms.service.telcoapiaproxy.TelcoApiProxyClient;
 import com.esd.sercom.bulksms.util.Utilities;
@@ -85,6 +82,16 @@ public class UserServiceImpl implements UserService{
         emailModel.setTo(user.getEmail());
         telcoApiProxyClient.sendEmail(emailModel);
         return null;
+    }
+
+    @Override
+    public UserDetails login(LoginDetails login) {
+        UserDetails user = this.getUser(login.getEmail());
+        if(user == null) throw new NotFoundException("User does not exist");
+        boolean matches = passwordEncoder.matches(user.getPassword(), login.getPassword());
+        if(!matches)
+            throw new BadRequestException("Authentication failed");
+        return user;
     }
 
     @Override

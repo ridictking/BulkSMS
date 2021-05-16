@@ -2,6 +2,7 @@ package com.esd.sercom.bulksms.api;
 
 import com.esd.sercom.bulksms.model.DTO.ChangePasswordDetails;
 import com.esd.sercom.bulksms.model.DTO.CreatePassword;
+import com.esd.sercom.bulksms.model.DTO.LoginDetails;
 import com.esd.sercom.bulksms.model.DTO.UserDetails;
 import com.esd.sercom.bulksms.service.usermanagement.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,11 @@ public class UserController {
     public ResponseEntity<UserDetails> register(@Valid @RequestBody UserDetails details){
         UserDetails userDetails = userService.newUser(details);
         return new ResponseEntity<>(userDetails, HttpStatus.CREATED);
+    }
+    @PostMapping("/login")
+    public ResponseEntity<UserDetails> login(@Valid @RequestBody LoginDetails details){
+        UserDetails userDetails = userService.login(details);
+        return new ResponseEntity<>(userDetails, HttpStatus.OK);
     }
 
     @PostMapping("/update")
