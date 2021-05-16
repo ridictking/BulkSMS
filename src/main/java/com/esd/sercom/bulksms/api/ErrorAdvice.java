@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @ControllerAdvice(annotations = {RestController.class})
 @ResponseBody
@@ -47,17 +48,7 @@ public class ErrorAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Response handleValidationExceptions(MethodArgumentNotValidException ex) {
-        Response response = new Response();
-        response.setCode("400");
-        response.setDescription("Error in one or more field");
-
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            response.getErrors().add(new Error(fieldName,errorMessage));
-        });
-        return response;
+        return createAPIResponse(ex,"400");
     }
     private Response createAPIResponse(Exception e, String code){
         e.printStackTrace();
