@@ -16,7 +16,6 @@ import javax.validation.Valid;
 public class UserController {
 
     private final UserService userService;
-
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
@@ -30,7 +29,7 @@ public class UserController {
 
     @PostMapping("/update")
     public ResponseEntity<UserDetails> update(@Valid @RequestBody UserDetails details){
-        UserDetails userDetails = userService.newUser(details);
+        UserDetails userDetails = userService.updateUser(details);
         return new ResponseEntity<>(userDetails, HttpStatus.NO_CONTENT);
     }
 

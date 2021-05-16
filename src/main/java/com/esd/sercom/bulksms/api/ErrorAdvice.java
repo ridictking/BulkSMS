@@ -36,6 +36,13 @@ public class ErrorAdvice {
         return createAPIResponse(e,"404");
     }
 
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public Response handleGeneralException(Exception e){
+        return createAPIResponse(e,"404");
+    }
+
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)

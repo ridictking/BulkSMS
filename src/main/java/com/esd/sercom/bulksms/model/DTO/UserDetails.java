@@ -176,4 +176,26 @@ public class UserDetails {
     public void setServiceType(String serviceType) {
         this.serviceType = serviceType;
     }
+
+    @Override
+    public String toString() {
+        return "UserDetails{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", userState='" + userState + '\'' +
+                ", registrationDate=" + registrationDate +
+                ", correlationId='" + correlationId + '\'' +
+                ", userGroup='" + userGroup + '\'' +
+                ", password='" + password + '\'' +
+                ", accountCode='" + accountCode + '\'' +
+                ", eventType='" + eventType + '\'' +
+                ", transactionId='" + transactionId + '\'' +
+                ", operationType='" + operationType + '\'' +
+                ", address=" + address +
+                ", msisdn='" + msisdn + '\'' +
+                ", serviceType='" + serviceType + '\'' +
+                '}';
+    }
 }

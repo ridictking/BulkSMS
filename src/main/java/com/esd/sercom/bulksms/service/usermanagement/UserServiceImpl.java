@@ -10,6 +10,8 @@ import com.esd.sercom.bulksms.model.DTO.UserDetails;
 import com.esd.sercom.bulksms.model.entity.UserEntity;
 import com.esd.sercom.bulksms.service.telcoapiaproxy.TelcoApiProxyClient;
 import com.esd.sercom.bulksms.util.Utilities;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -22,6 +24,7 @@ public class UserServiceImpl implements UserService{
     private final UserEntityRepo userEntityRepo;
     private final PasswordEncoder passwordEncoder;
     private final TelcoApiProxyClient telcoApiProxyClient;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
 
     public UserServiceImpl(UserEntityRepo userEntityRepo, PasswordEncoder passwordEncoder, TelcoApiProxyClient telcoApiProxyClient) {
@@ -32,6 +35,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserDetails newUser(UserDetails userDetails) {
+        logger.info("User registration details : " + userDetails.toString());
         //Check if User is present
         UserDetails user = this.getUser(userDetails.getEmail());
         if(user != null) throw new BadRequestException("User Already exist");
