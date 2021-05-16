@@ -10,13 +10,13 @@ import com.esd.sercom.bulksms.util.LogUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @ControllerAdvice(annotations = {RestController.class})
 @ResponseBody
@@ -48,7 +48,16 @@ public class ErrorAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Response handleValidationExceptions(MethodArgumentNotValidException ex) {
-        return createAPIResponse(ex,"400");
+        Response response = new Response("400", "Error Occur in one or more fields");
+        List<Error> errors = new ArrayList<>();
+        BindingResult result = ex.getBindingResult();
+        List<org.springframework.validation.FieldError> fieldErrors = result.getFieldErrors();
+        for (org.springframework.validation.FieldError fieldError: fieldErrors) {
+            Error error = new Error(fieldError.getField(), fieldError.getDefaultMessage());
+            errors.add(error);
+        }
+       response.setErrors(errors);
+        return response;
     }
     private Response createAPIResponse(Exception e, String code){
         e.printStackTrace();

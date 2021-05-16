@@ -10,9 +10,8 @@ import java.util.Date;
 @Entity
 @Table(name = "Bulksms_Users")
 public class UserEntity {
-
-    @NotNull
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String firstName;
     private String lastName;
