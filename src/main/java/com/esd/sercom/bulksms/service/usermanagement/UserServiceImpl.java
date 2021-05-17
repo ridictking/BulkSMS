@@ -40,10 +40,12 @@ public class UserServiceImpl implements UserService{
         userToBeRegistered.setCorrelationId(UUID.randomUUID().toString());
         UserEntity userEntity = userEntityRepo.save(userToBeRegistered);
         String jwt = Utilities.createJWT(userEntity.getEmail(),36000000,null);
+        String body = this.createUserMail(user, "");
         EmailModel emailModel = new EmailModel();
         emailModel.setFrom("bulksms-noreply@9mobile.com.ng");
         emailModel.setSubject("Please confirm your new 9mobile Bulksms account");
-        emailModel.setBody("Please follow the link " + jwt);
+        //emailModel.setBody("Please follow the link " + jwt);
+        emailModel.setBody(body);
         emailModel.setTo(userDetails.getEmail());
         telcoApiProxyClient.sendEmail(emailModel);
         return userDetails;
@@ -84,6 +86,23 @@ public class UserServiceImpl implements UserService{
         return null;
     }
 
+    private String createUserMail(UserDetails entity, String url){
+        String mail = "<html>\n" +
+                "  <head />\n" +
+                "  <body>\n" +
+                "    <p style=\"font-size:12pt;font-family:'Segoe UI'\">"+"Dear"+ entity.getFirstName() +", "+entity.getLastName()+ "</p>\n" +
+                "    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\n" +
+                "          Your account has been created. Please follow the link below to visit the 9Mobile developer portal and claim it:\n" +
+                "        </p>\n" +
+                "    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\n" +
+                "      <a href="+ url+ " >Confirm Url</a>\n" +
+                "    </p>\n" +
+                "    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Best,</p>\n" +
+                "    <p style=\"font-size:12pt;font-family:'Segoe UI'\">The 9Mobile API Team</p>\n" +
+                "  </body>\n" +
+                "</html>";
+        return mail;
+    }
     @Override
     public UserDetails login(LoginDetails login) {
         UserDetails user = this.getUser(login.getEmail());
