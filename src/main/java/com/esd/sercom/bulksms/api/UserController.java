@@ -39,7 +39,7 @@ public class UserController {
         return new ResponseEntity<>(userDetails, HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("/create-password")
+    @PostMapping("/create-password")
     public ResponseEntity<UserDetails> createPassword(@Valid @RequestBody CreatePassword password){
         userService.createPassword(password);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -51,7 +51,7 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("/change-password")
+    @PostMapping("/change-password")
     public ResponseEntity<UserDetails> changePassword(@Valid @RequestBody ChangePasswordDetails changePasswordDetails){
         UserDetails userDetails = userService.changePassword(changePasswordDetails);
         return new ResponseEntity<>(userDetails,HttpStatus.CREATED);
@@ -63,7 +63,7 @@ public class UserController {
         return new ResponseEntity<>(userDetails,HttpStatus.OK);
     }
 
-    @DeleteMapping("/deactivate-user")
+    @PostMapping("/deactivate-user")
     public ResponseEntity<Void> deactivateUser(@RequestParam String email){
         userService.deleteUser(email);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
