@@ -3,9 +3,7 @@ package com.esd.sercom.bulksms.model.entity;
 import com.esd.sercom.bulksms.model.DTO.UserDetails;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Table(name = "Bulksms_Users")
@@ -28,6 +26,7 @@ public class UserEntity {
     private String msisdn;
     @Column(columnDefinition = "varchar(155) default 'BULKSMS'")
     private String serviceType;
+    private LocalDateTime datePasswordUpdate;
 
     public UserEntity(UserDetails details) {
         this.id = details.getId();
@@ -48,6 +47,14 @@ public class UserEntity {
     }
 
     public UserEntity() {
+    }
+
+    public LocalDateTime getDatePasswordUpdate() {
+        return datePasswordUpdate;
+    }
+
+    public void setDatePasswordUpdate(LocalDateTime datePasswordUpdate) {
+        this.datePasswordUpdate = datePasswordUpdate;
     }
 
     public Long getId() {

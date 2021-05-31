@@ -27,6 +27,7 @@ public class UserDetails {
     private Address address;
     private String msisdn;
     private String serviceType;
+    private LocalDateTime datePasswordUpdate;
 
     public UserDetails() {
     }
@@ -47,6 +48,7 @@ public class UserDetails {
         this.operationType = userEntity.getOperationType();
         this.msisdn = userEntity.getMsisdn();
         this.serviceType = userEntity.getServiceType();
+        this.datePasswordUpdate = userEntity.getDatePasswordUpdate();
     }
 
     public long getId() {
