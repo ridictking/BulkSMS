@@ -21,6 +21,6 @@ public class BulkSmsConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder(5);
+        return new BCryptPasswordEncoder();
     }
 }

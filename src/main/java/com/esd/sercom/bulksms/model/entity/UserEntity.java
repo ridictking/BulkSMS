@@ -34,7 +34,7 @@ public class UserEntity {
         this.lastName = details.getLastName();
         this.email = details.getEmail();
         this.userState = details.getUserState();
-        this.registrationDate = details.getRegistrationDate();
+        this.registrationDate = LocalDateTime.now();
         this.correlationId = details.getCorrelationId();
         this.userGroup = details.getUserGroup();
         this.password = details.getPassword();

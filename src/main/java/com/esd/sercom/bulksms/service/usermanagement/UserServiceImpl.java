@@ -68,8 +68,10 @@ public class UserServiceImpl implements UserService{
         if(!password.getPassword().equals(password.getConfirmPassword())) throw new NotFoundException("Password doesn't match");
         UserDetails user = this.getUser(password.getEmail());
         if(user == null) throw new NotFoundException("User does not exist");
-        user.setPassword(password.getPassword());
-        this.updateUser(user);
+        if(StringUtils.hasText(user.getPassword())) throw new BadRequestException("Password is already set");
+//        user.setPassword(passwordEncoder.encode(password.getPassword()));
+        user.setPassword(passwordEncoder.encode(password.getPassword()));
+        userEntityRepo.save(new UserEntity(user));
     }
 
     @Override
@@ -108,7 +110,8 @@ public class UserServiceImpl implements UserService{
     public UserDetails login(LoginDetails login) {
         UserDetails user = this.getUser(login.getEmail());
         if(user == null) throw new NotFoundException("User does not exist");
-        boolean matches = passwordEncoder.matches(user.getPassword(), login.getPassword());
+        String password = passwordEncoder.encode(login.getPassword());
+        boolean matches = passwordEncoder.matches(login.getPassword(), user.getPassword());
         if(!matches)
             throw new BadRequestException("Authentication failed");
         return user;
@@ -139,6 +142,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserDetails getUser(String email) {
         Optional<UserEntity> user = userEntityRepo.findByEmail(email);
-        return user.map(UserDetails::new).orElse(null);
+        UserDetails userDetails = user.map(UserDetails::new).orElse(null);
+        return userDetails;
     }
 }
