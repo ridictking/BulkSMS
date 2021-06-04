@@ -40,7 +40,8 @@ public class UserServiceImpl implements UserService{
         userToBeRegistered.setCorrelationId(UUID.randomUUID().toString());
         UserEntity userEntity = userEntityRepo.save(userToBeRegistered);
         String jwt = Utilities.createJWT(userEntity.getEmail(),36000000,null);
-        String body = this.createUserMail(userDetails, "");
+        String url = "baseUrl/app/create-password?token="+jwt;
+        String body = this.createUserMail(userDetails, url);
         EmailModel emailModel = new EmailModel();
         emailModel.setFrom("bulksms-noreply@9mobile.com.ng");
         emailModel.setSubject("Please confirm your new 9mobile Bulksms account");
