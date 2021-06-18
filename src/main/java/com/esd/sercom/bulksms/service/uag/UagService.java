@@ -68,6 +68,7 @@ public class UagService {
             dto.setAccountName(x.getAccountName());
             dto.setNumberOfSms(x.getNumberOfSms());
             dto.setValidity(x.getValidityDuration());
+            dto.setDateCreated(x.getSubscriptionDate());
             return dto;
         }).collect(Collectors.toList());
         return collect;

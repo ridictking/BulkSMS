@@ -3,6 +3,8 @@ package com.esd.sercom.bulksms.model.DTO;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.time.LocalDateTime;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UagTransactionModificationDTO {
@@ -11,7 +13,7 @@ public class UagTransactionModificationDTO {
     private Integer numberOfSms;
     private Long amount;
     private String correlationId;
-    private String dateCreated;
+    private LocalDateTime dateCreated;
     private String rechargeSuccess;
     private String accountType;
     private int rollOverFlag;
@@ -56,11 +58,11 @@ public class UagTransactionModificationDTO {
         this.correlationId = correlationId;
     }
 
-    public String getDateCreated() {
+    public LocalDateTime getDateCreated() {
         return dateCreated;
     }
 
-    public void setDateCreated(String dateCreated) {
+    public void setDateCreated(LocalDateTime dateCreated) {
         this.dateCreated = dateCreated;
     }
 
