@@ -17,7 +17,7 @@ import java.util.UUID;
 @Entity
 public class UagTransactionEntity implements Serializable, Persistable<Long> {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @NotNull
     private String accountName;
