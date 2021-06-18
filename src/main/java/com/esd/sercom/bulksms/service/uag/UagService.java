@@ -46,7 +46,6 @@ public class UagService {
                 dto.setRollOverFlag(1);
                 transactionEntity.setNumberOfSms(uagTransactionEntity.getNumberOfSms()+ dto.getNumberOfSms());
             }else{
-                transactionEntity.setRollOver(false);
                 dto.setRollOverFlag(0);
             }
         }

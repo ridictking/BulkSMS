@@ -6,6 +6,7 @@ import org.springframework.data.domain.Persistable;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -16,7 +17,7 @@ import java.util.UUID;
 @Entity
 public class UagTransactionEntity implements Serializable, Persistable<Long> {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotNull
     private String accountName;
@@ -39,7 +40,8 @@ public class UagTransactionEntity implements Serializable, Persistable<Long> {
                 .setValidityDuration(dto.getValidity())
                 .setAmount(dto.getAmount())
                 .setSubscriptionDate(LocalDateTime.now())
-                .setCorrelationId(UUID.randomUUID().toString());
+                .setCorrelationId(UUID.randomUUID().toString())
+                .setRollOver(false);
     }
     public void setId(Long id) {
         this.id = id;
