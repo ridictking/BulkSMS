@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("uag/api/v1")
 public class TransactionController {
@@ -29,8 +31,8 @@ public class TransactionController {
         return ResponseEntity.ok(verify);
     }
     @GetMapping("/query")
-    public ResponseEntity<UagTransactionModificationDTO> query(@RequestParam String accountName){
-        UagTransactionModificationDTO query = uagService.query(accountName);
+    public ResponseEntity<List<UagTransactionModificationDTO>> query(@RequestParam String accountName){
+        List<UagTransactionModificationDTO> query = uagService.query(accountName);
         return ResponseEntity.ok(query);
     }
 }

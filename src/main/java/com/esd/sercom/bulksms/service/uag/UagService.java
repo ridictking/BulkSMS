@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UagService {
@@ -49,7 +50,7 @@ public class UagService {
                 dto.setRollOverFlag(0);
             }
         }
-        ResponseEntity<UagTransactionModificationDTO> modify = uagClient.modify(dto);
+        //ResponseEntity<UagTransactionModificationDTO> modify = uagClient.modify(dto);
         transactionEntity.setStatus(Status.SUCCESSFUL);
         logger.info("Modify data to be persisted: "+transactionEntity.toString());
         UagTransactionEntity save = uagTransactionRepo.save(transactionEntity);
@@ -57,9 +58,20 @@ public class UagService {
         notifyStakeholder();
         return dto;
     }
-    public UagTransactionModificationDTO query(String accountName){
-        ResponseEntity<UagTransactionModificationDTO> query = uagClient.query(accountName, Keyword.QUERY.name());
-        return query.getBody();
+    public List<UagTransactionModificationDTO> query(String accountName){
+        //ResponseEntity<UagTransactionModificationDTO> query = uagClient.query(accountName, Keyword.QUERY.name());
+        //return query.getBody();
+        List<UagTransactionEntity> uagTransactions = uagTransactionRepo.findByAccountNameOrderByIdDesc(accountName);
+        List<UagTransactionModificationDTO> collect = uagTransactions.stream().map(x -> {
+            UagTransactionModificationDTO dto = new UagTransactionModificationDTO();
+            dto.setCorrelationId(x.getCorrelationId());
+            dto.setAmount(x.getAmount());
+            dto.setAccountName(x.getAccountName());
+            dto.setNumberOfSms(x.getNumberOfSms());
+            dto.setValidity(x.getValidityDuration());
+            return dto;
+        }).collect(Collectors.toList());
+        return collect;
     }
 
     public UagTransactionModificationDTO verify(String accountName){
