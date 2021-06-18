@@ -1,5 +1,6 @@
 package com.esd.sercom.bulksms.service.telcoapiaproxy;
 
+import com.esd.sercom.bulksms.exceptions.BadRequestException;
 import com.esd.sercom.bulksms.model.DTO.EmailModel;
 import com.esd.sercom.bulksms.util.Utilities;
 import org.slf4j.Logger;
@@ -36,7 +37,7 @@ public class TelcoApiProxyClient {
 
     public String sendEmail(EmailModel emailModel){
         HttpEntity<EmailModel>
-                emailModelHttpEntity = new HttpEntity<>(emailModel);
+                emailModelHttpEntity = new HttpEntity<>(emailModel,httpHeaders);
         try {
             ResponseEntity<String> exchange = restTemplate.exchange(utilities.getEmailEndpoint(), HttpMethod.POST, emailModelHttpEntity, String.class);
             return exchange.getStatusCode().is2xxSuccessful()? "Successful" : "Failed";

@@ -3,16 +3,14 @@ package com.esd.sercom.bulksms.model.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "BulkSmsProducts")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Product implements Serializable {
@@ -27,14 +25,12 @@ public class Product implements Serializable {
     private String productCode;
     @NotNull
     private int productQuantity;
+    @NotNull
     private LocalDateTime dateTime;
     @NotBlank(message = "VAT code cannot be blank")
     private String vatCode;
     @NotNull
     private Double vatAmount;
-//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-//    @JoinColumn(name = "transactionId", nullable = false)
-//    private ErpInvoiceRequest2 invoice;
 
     public Product() {
     }

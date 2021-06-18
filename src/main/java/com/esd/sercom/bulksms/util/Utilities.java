@@ -21,9 +21,27 @@ public class Utilities {
 
     @Value("${service.email.endpoint}")
     private String emailEndpoint;
+    @Value("${uag.endpoint.modify}")
+    private String modifyUrl;
+    @Value("${uag.endpoint.query}")
+    private String queryUrl;
+    @Value("${uag.endpoint.verify}")
+    private String verificationUrl;
 
     public String getEmailEndpoint() {
         return emailEndpoint;
+    }
+
+    public String getModifyUrl() {
+        return modifyUrl;
+    }
+
+    public String getQueryUrl() {
+        return queryUrl;
+    }
+
+    public String getVerificationUrl() {
+        return verificationUrl;
     }
 
     public static String createJWT(String email, long ttlMillis, String token) {
