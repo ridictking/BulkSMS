@@ -49,6 +49,7 @@ public class UagService {
                 dto.setRollOverFlag(0);
             }
         }
+        long noOfSms = calculateNumberOfSms(dto);
         //ResponseEntity<UagTransactionModificationDTO> modify = uagClient.modify(dto);
         transactionEntity.setStatus(Status.SUCCESSFUL);
         logger.info("Modify data to be persisted: "+transactionEntity.toString());
@@ -57,6 +58,12 @@ public class UagService {
         notifyStakeholder();
         return dto;
     }
+
+    //Todo Calculate no of sms
+    private long calculateNumberOfSms(UagTransactionModificationDTO dto) {
+        return 0;
+    }
+
     public List<UagTransactionModificationDTO> query(String accountName){
         //ResponseEntity<UagTransactionModificationDTO> query = uagClient.query(accountName, Keyword.QUERY.name());
         //return query.getBody();

@@ -27,6 +27,8 @@ public class Utilities {
     private String queryUrl;
     @Value("${uag.endpoint.verify}")
     private String verificationUrl;
+    @Value("${user.identity.maximum.failed.login.attempt}")
+    private int maximumFailedLoginAttempt;
 
     public String getEmailEndpoint() {
         return emailEndpoint;
@@ -42,6 +44,10 @@ public class Utilities {
 
     public String getVerificationUrl() {
         return verificationUrl;
+    }
+
+    public int getMaximumFailedLoginAttempt() {
+        return maximumFailedLoginAttempt;
     }
 
     public static String createJWT(String email, long ttlMillis, String token) {

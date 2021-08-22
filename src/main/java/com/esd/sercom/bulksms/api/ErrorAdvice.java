@@ -10,6 +10,7 @@ import com.esd.sercom.bulksms.util.LogUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -27,7 +28,10 @@ public class ErrorAdvice {
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ResponseBody
     public Response handleBadRequestException(BadRequestException e){
-        return createAPIResponse(e,"400");
+        String code = "";
+        if(StringUtils.hasText(e.getCode())) code = e.getCode();
+        else code = "400";
+        return createAPIResponse(e,code);
     }
 
     @ExceptionHandler(NotFoundException.class)

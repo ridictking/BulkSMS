@@ -27,6 +27,9 @@ public class UserEntity {
     @Column(columnDefinition = "varchar(155) default 'BULKSMS'")
     private String serviceType;
     private LocalDateTime datePasswordUpdate;
+    private LocalDateTime lastSuccessfulLogin;
+    private int failedLoginAttempt;
+    private boolean lockOut;
 
     public UserEntity(UserDetails details) {
         this.id = details.getId();
@@ -175,5 +178,30 @@ public class UserEntity {
 
     public void setServiceType(String serviceType) {
         this.serviceType = serviceType;
+    }
+
+
+    public LocalDateTime getLastSuccessfulLogin() {
+        return lastSuccessfulLogin;
+    }
+
+    public void setLastSuccessfulLogin(LocalDateTime lastSuccessfulLogin) {
+        this.lastSuccessfulLogin = lastSuccessfulLogin;
+    }
+
+    public int getFailedLoginAttempt() {
+        return failedLoginAttempt;
+    }
+
+    public void setFailedLoginAttempt(int failedLoginAttempt) {
+        this.failedLoginAttempt = failedLoginAttempt;
+    }
+
+    public boolean isLockOut() {
+        return lockOut;
+    }
+
+    public void setLockOut(boolean lockOut) {
+        this.lockOut = lockOut;
     }
 }

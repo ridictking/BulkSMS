@@ -1,18 +1,23 @@
 package com.esd.sercom.bulksms.service.usermanagement;
 
+import com.esd.sercom.bulksms.dao.AccountManagerRepo;
 import com.esd.sercom.bulksms.dao.UserEntityRepo;
 import com.esd.sercom.bulksms.exceptions.BadRequestException;
 import com.esd.sercom.bulksms.exceptions.NotFoundException;
 import com.esd.sercom.bulksms.model.DTO.*;
+import com.esd.sercom.bulksms.model.entity.AccountManager;
 import com.esd.sercom.bulksms.model.entity.UserEntity;
 import com.esd.sercom.bulksms.service.telcoapiaproxy.TelcoApiProxyClient;
 import com.esd.sercom.bulksms.util.Utilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -21,13 +26,16 @@ public class UserServiceImpl implements UserService{
     private final UserEntityRepo userEntityRepo;
     private final PasswordEncoder passwordEncoder;
     private final TelcoApiProxyClient telcoApiProxyClient;
+    private final AccountManagerRepo accountManagerRepo;
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
 
-    public UserServiceImpl(UserEntityRepo userEntityRepo, PasswordEncoder passwordEncoder, TelcoApiProxyClient telcoApiProxyClient) {
+    @Autowired
+    public UserServiceImpl(UserEntityRepo userEntityRepo, PasswordEncoder passwordEncoder, TelcoApiProxyClient telcoApiProxyClient, AccountManagerRepo accountManagerRepo) {
         this.userEntityRepo = userEntityRepo;
         this.passwordEncoder = passwordEncoder;
         this.telcoApiProxyClient = telcoApiProxyClient;
+        this.accountManagerRepo = accountManagerRepo;
     }
 
     @Override
@@ -40,7 +48,7 @@ public class UserServiceImpl implements UserService{
         userToBeRegistered.setCorrelationId(UUID.randomUUID().toString());
         UserEntity userEntity = userEntityRepo.save(userToBeRegistered);
         String jwt = Utilities.createJWT(userEntity.getEmail(),36000000,null);
-        String url = "baseUrl/app/create-password?token="+jwt;
+        String url = "baseUrl/app/create-password?token="+jwt;  //Todo set base url for FE to route create password
         String body = this.createUserMail(userDetails, url);
         EmailModel emailModel = new EmailModel();
         emailModel.setFrom("bulksms-noreply@9mobile.com.ng");
@@ -72,6 +80,27 @@ public class UserServiceImpl implements UserService{
 //        user.setPassword(passwordEncoder.encode(password.getPassword()));
         user.setPassword(passwordEncoder.encode(password.getPassword()));
         userEntityRepo.save(new UserEntity(user));
+    }
+
+    @Override
+    public void addAccountManager(AccountManager accountManager) {
+        if(accountManager== null) throw new BadRequestException("Account Manager cannot be null");
+        accountManagerRepo.save(accountManager);
+    }
+
+    @Override
+    public void updateAccountManager(String accountCode, AccountManager accountManager) {
+        if(!StringUtils.hasText(accountCode) || accountManager == null) throw new BadRequestException("Invalid Parameters");
+        Optional<AccountManager> manager = accountManagerRepo.findByAccountCode(accountCode);
+        if(!manager.isPresent()){
+            accountManagerRepo.save(accountManager);
+        }else{
+            AccountManager accountManager1 = manager.get();
+            accountManager1.setEmailAddress(accountManager.getEmailAddress());
+            accountManager1.setFullName(accountManager.getFullName());
+            accountManager1.setMsisdn(accountManager.getMsisdn());
+            accountManagerRepo.save(accountManager1);
+        }
     }
 
     @Override
@@ -108,27 +137,42 @@ public class UserServiceImpl implements UserService{
     }
     @Override
     public UserDetails login(LoginDetails login) {
-        UserDetails user = this.getUser(login.getEmail());
-        if(user == null) throw new NotFoundException("User does not exist");
+        Optional<UserEntity> userEntity = userEntityRepo.findByEmail(login.getEmail());
+        if(!userEntity.isPresent()) throw new NotFoundException("User does not exist");
+        UserEntity entity = userEntity.get();
         String password = passwordEncoder.encode(login.getPassword());
-        boolean matches = passwordEncoder.matches(login.getPassword(), user.getPassword());
-        if(!matches)
-            throw new BadRequestException("Authentication failed");
-        return user;
+        boolean matches = passwordEncoder.matches(login.getPassword(), entity.getPassword());
+        if(!matches){
+            entity.setFailedLoginAttempt(entity.getFailedLoginAttempt()+1);
+            if(entity.getFailedLoginAttempt() > 5){
+                entity.setLockOut(true);
+                //send notification to account manager
+            }
+            userEntityRepo.save(entity);
+            throw new BadRequestException(HttpStatus.UNAUTHORIZED.toString(),"Authentication failed");
+        }else{
+            if(entity.isLockOut()) throw new BadRequestException(HttpStatus.UNAUTHORIZED.toString(),"Account locked out, please change your password");
+            entity.setLastSuccessfulLogin(LocalDateTime.now());
+            userEntityRepo.save(entity);
+            //send notification to account manager
+            return new UserDetails(entity);
+        }
     }
 
     @Override
     public UserDetails changePassword(ChangePasswordDetails userChangePasswordDetails) {
-        UserDetails user = this.getUser(userChangePasswordDetails.getEmail());
-        if(user == null) throw new NotFoundException("User does not exist");
+        Optional<UserEntity> userEntity = userEntityRepo.findByEmail(userChangePasswordDetails.getEmail());
+        if(!userEntity.isPresent()) throw new NotFoundException("User does not exist");
+        UserEntity user = userEntity.get();
         boolean matches = passwordEncoder.matches(user.getPassword(), userChangePasswordDetails.getOldPassword());
         if(!matches)
-            throw new BadRequestException("Authentication failed");
+            throw new BadRequestException(HttpStatus.UNAUTHORIZED.toString(),"Authentication failed");
         String newPassword = passwordEncoder.encode(userChangePasswordDetails.getNewPassword());
         user.setPassword(newPassword);
-        userEntityRepo.save(new UserEntity(user));
-        user.setPassword(null);
-        return user;
+        user.setLockOut(false);
+        //set notification to account manager
+        userEntityRepo.save(user);
+        return new UserDetails(user);
     }
 
     @Override

@@ -2,12 +2,14 @@ package com.esd.sercom.bulksms.model.DTO;
 
 import com.esd.sercom.bulksms.model.entity.Address;
 import com.esd.sercom.bulksms.model.entity.UserEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 public class UserDetails {
+    @JsonIgnore
     private long id;
     @NotNull
     private String firstName;
@@ -19,6 +21,7 @@ public class UserDetails {
     private LocalDateTime registrationDate;
     private String correlationId;
     private String userGroup;
+    @JsonIgnore
     private String password;
     private String accountCode;
     private String eventType;

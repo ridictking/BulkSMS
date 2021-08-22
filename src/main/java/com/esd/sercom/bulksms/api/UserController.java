@@ -4,6 +4,7 @@ import com.esd.sercom.bulksms.model.DTO.ChangePasswordDetails;
 import com.esd.sercom.bulksms.model.DTO.CreatePassword;
 import com.esd.sercom.bulksms.model.DTO.LoginDetails;
 import com.esd.sercom.bulksms.model.DTO.UserDetails;
+import com.esd.sercom.bulksms.model.entity.AccountManager;
 import com.esd.sercom.bulksms.service.usermanagement.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -67,5 +68,17 @@ public class UserController {
     public ResponseEntity<Void> deactivateUser(@RequestParam String email){
         userService.deleteUser(email);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/add-accountmanager")
+    public ResponseEntity<Void> addAccountManager(@RequestBody AccountManager manager){
+        userService.addAccountManager(manager);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PostMapping("/update-accountmanager/{accountCode}")
+    public ResponseEntity<Void> addAccountManager(@PathVariable String accountCode,  @RequestBody AccountManager manager){
+        userService.updateAccountManager(accountCode, manager);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
