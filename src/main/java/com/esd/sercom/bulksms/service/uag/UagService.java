@@ -1,7 +1,11 @@
 package com.esd.sercom.bulksms.service.uag;
 
+import com.esd.sercom.bulksms.dao.BulkSmsPricingRepo;
 import com.esd.sercom.bulksms.dao.UagTransactionRepo;
+import com.esd.sercom.bulksms.exceptions.BadRequestException;
+import com.esd.sercom.bulksms.exceptions.NotFoundException;
 import com.esd.sercom.bulksms.model.DTO.UagTransactionModificationDTO;
+import com.esd.sercom.bulksms.model.entity.BulkSmsPricing;
 import com.esd.sercom.bulksms.model.entity.UagTransactionEntity;
 import com.esd.sercom.bulksms.service.telcoapiaproxy.TelcoApiProxyClient;
 import com.esd.sercom.bulksms.util.Keyword;
@@ -9,10 +13,13 @@ import com.esd.sercom.bulksms.util.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,12 +29,14 @@ public class UagService {
     private final UagClient uagClient;
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final TelcoApiProxyClient proxyClient;
+    private final BulkSmsPricingRepo smsPricingRepo;
 
     @Autowired
-    public UagService(UagTransactionRepo uagTransactionRepo, UagClient uagClient, TelcoApiProxyClient proxyClient) {
+    public UagService(UagTransactionRepo uagTransactionRepo, UagClient uagClient, TelcoApiProxyClient proxyClient, BulkSmsPricingRepo smsPricingRepo) {
         this.uagTransactionRepo = uagTransactionRepo;
         this.uagClient = uagClient;
         this.proxyClient = proxyClient;
+        this.smsPricingRepo = smsPricingRepo;
     }
 
     public UagTransactionModificationDTO modify(UagTransactionModificationDTO dto){
@@ -61,7 +70,28 @@ public class UagService {
 
     //Todo Calculate no of sms
     private long calculateNumberOfSms(UagTransactionModificationDTO dto) {
+
         return 0;
+    }
+
+
+    @Cacheable("unit")
+    public BulkSmsPricing getPricingInfo(long boundUnit){
+        Optional<BulkSmsPricing> priceInfo = smsPricingRepo.findByLowerBoundUnitLessThanEqualAndUpperBoundUnitGreaterThanEqual(boundUnit,boundUnit);
+         if(!priceInfo.isPresent()) throw new NotFoundException("Pricing doesnt not exist");
+         return priceInfo.get();
+    }
+    @CacheEvict(value = "unit", allEntries = true)
+    public void emptyCache(){
+
+    }
+    public void addPricingInfo(BulkSmsPricing pricing){
+        if(pricing == null) throw new BadRequestException("");
+        smsPricingRepo.save(pricing);
+    }
+
+    public List<BulkSmsPricing> getAllPricing(){
+        return smsPricingRepo.findAll();
     }
 
     public List<UagTransactionModificationDTO> query(String accountName){
@@ -89,4 +119,18 @@ public class UagService {
     private void notifyStakeholder(){
         //Send notification to clients
     }
+
+    public void updatePricingInfo(String rank, BulkSmsPricing pricing) {
+        Optional<BulkSmsPricing> byRank =  smsPricingRepo.findByRank(rank);
+        if(!byRank.isPresent()) throw new NotFoundException("");
+        BulkSmsPricing bulkSmsPricing = byRank.get();
+        bulkSmsPricing.setLowerBoundUnit(pricing.getLowerBoundUnit());
+        bulkSmsPricing.setUpperBoundUnit(pricing.getUpperBoundUnit());
+        bulkSmsPricing.setPromotionalPricePerSms(pricing.getPromotionalPricePerSms());
+        bulkSmsPricing.setTransactionalPricePerSms(pricing.getTransactionalPricePerSms());
+        smsPricingRepo.save(bulkSmsPricing);
+    }
+
+    //Todo endpoint to update and reload cache pricing unit
+    //Todo endpoint to add and reload cache unit
 }
