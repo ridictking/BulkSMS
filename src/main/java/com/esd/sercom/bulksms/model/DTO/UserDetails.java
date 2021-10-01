@@ -3,7 +3,6 @@ package com.esd.sercom.bulksms.model.DTO;
 import com.esd.sercom.bulksms.model.entity.Address;
 import com.esd.sercom.bulksms.model.entity.UserEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
