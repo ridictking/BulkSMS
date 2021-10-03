@@ -36,7 +36,6 @@ public class UagTransactionEntity implements Serializable, Persistable<Long> {
 
     public UagTransactionEntity of(UagTransactionModificationDTO dto){
         return this.setAccountName(dto.getAccountName())
-                .setNumberOfSms(dto.getNumberOfSms())
                 .setValidityDuration(dto.getValidity())
                 .setAmount(dto.getAmount())
                 .setSubscriptionDate(LocalDateTime.now())

@@ -28,7 +28,7 @@ spec:
               value: http://10.161.1.238:8080/sms/rest/submit/send-sms
             - name: SENDSMS_URL1
               value: http://10.161.10.169:64805/sms/rest/submit/send-sms
-          image: acrsercomcloud.azurecr.io/bulksms-prod:539
+          image: acrsercomcloud.azurecr.io/bulksms-prod:594
           imagePullPolicy: IfNotPresent
           name: bulksms-backend
           ports:
@@ -48,17 +48,17 @@ spec:
       schedulerName: default-scheduler
       securityContext: {}
       terminationGracePeriodSeconds: 30
----
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    app: bulksms-backend
-  name: bulksms-backend
-spec:
-  ports:
-    - name: default
-      port: 7882
-      targetPort: 7882
-  selector:
-    app: bulksms-backend
+#---
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  labels:
+#    app: bulksms-backend
+#  name: bulksms-backend
+#spec:
+#  ports:
+#    - name: default
+#      port: 7882
+#      targetPort: 7882
+#  selector:
+#    app: bulksms-backend
