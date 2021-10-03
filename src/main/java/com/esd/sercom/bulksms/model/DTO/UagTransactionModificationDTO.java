@@ -1,5 +1,6 @@
 package com.esd.sercom.bulksms.model.DTO;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -16,6 +17,7 @@ public class UagTransactionModificationDTO {
     private LocalDateTime dateCreated;
     private String rechargeSuccess;
     private String accountType;
+    @JsonIgnore
     private int rollOverFlag;
 
     public String getAccountName() {
