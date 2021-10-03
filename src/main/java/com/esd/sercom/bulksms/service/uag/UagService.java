@@ -131,6 +131,12 @@ public class UagService {
         bulkSmsPricing.setTransactionalPricePerSms(pricing.getTransactionalPricePerSms());
         smsPricingRepo.save(bulkSmsPricing);
     }
+    public void webHookV2(String trxRef, String transactionId) {
+        //PaymentRequest request = paymentRepo.findByTransactionReference(trxRef);
+        //uagTransactionRepo.
+        //modify()
+
+    }
 
     //Todo endpoint to update and reload cache pricing unit
     //Todo endpoint to add and reload cache unit

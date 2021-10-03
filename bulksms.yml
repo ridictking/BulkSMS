@@ -28,7 +28,7 @@ spec:
               value: http://10.161.1.238:8080/sms/rest/submit/send-sms
             - name: SENDSMS_URL1
               value: http://10.161.10.169:64805/sms/rest/submit/send-sms
-          image: acrsercomcloud.azurecr.io/bulksms-prod:594
+          image: acrsercomcloud.azurecr.io/bulksms-prod:595
           imagePullPolicy: IfNotPresent
           name: bulksms-backend
           ports:

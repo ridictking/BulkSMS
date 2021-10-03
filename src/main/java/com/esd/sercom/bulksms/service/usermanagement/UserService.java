@@ -17,4 +17,5 @@ public interface UserService {
     void createPassword(CreatePassword password);
     void addAccountManager(AccountManager accountManager);
     void updateAccountManager(String accountCode,AccountManager accountManager);
+    AccountManager getAccountManager(String accountCode);
 }

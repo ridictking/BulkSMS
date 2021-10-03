@@ -1,5 +1,6 @@
 package com.esd.sercom.bulksms.model.DTO;
 
+import com.esd.sercom.bulksms.model.entity.AccountManager;
 import com.esd.sercom.bulksms.model.entity.Address;
 import com.esd.sercom.bulksms.model.entity.UserEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -30,6 +31,7 @@ public class UserDetails {
     private String msisdn;
     private String serviceType;
     private LocalDateTime datePasswordUpdate;
+    private AccountManager accountManager;
 
     public UserDetails() {
     }
@@ -179,6 +181,22 @@ public class UserDetails {
 
     public void setServiceType(String serviceType) {
         this.serviceType = serviceType;
+    }
+
+    public LocalDateTime getDatePasswordUpdate() {
+        return datePasswordUpdate;
+    }
+
+    public void setDatePasswordUpdate(LocalDateTime datePasswordUpdate) {
+        this.datePasswordUpdate = datePasswordUpdate;
+    }
+
+    public AccountManager getAccountManager() {
+        return accountManager;
+    }
+
+    public void setAccountManager(AccountManager accountManager) {
+        this.accountManager = accountManager;
     }
 
     @Override
