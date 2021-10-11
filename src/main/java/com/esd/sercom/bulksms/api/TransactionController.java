@@ -5,6 +5,7 @@ import com.esd.sercom.bulksms.model.DTO.UagTransactionModificationDTO;
 import com.esd.sercom.bulksms.model.base.Response;
 import com.esd.sercom.bulksms.model.entity.BulkSmsPricing;
 import com.esd.sercom.bulksms.service.uag.UagService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -67,4 +68,14 @@ public class TransactionController {
         uagService.emptyCache();
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @Operation(summary = "Endpoint to receive payment confirmation from flutterwave")
+    @GetMapping("/callback")
+    private ResponseEntity<String> callback(@RequestParam String tx_ref,@RequestParam  String transaction_id, @RequestParam  String status){
+        if(status.equalsIgnoreCase("successful"))
+            uagService.webHookV2(tx_ref, transaction_id);
+        return new ResponseEntity<>("Payment verified",HttpStatus.OK);
+    }
+
+
 }

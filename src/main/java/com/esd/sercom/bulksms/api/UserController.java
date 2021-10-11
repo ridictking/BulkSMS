@@ -64,6 +64,11 @@ public class UserController {
         return new ResponseEntity<>(userDetails,HttpStatus.OK);
     }
 
+    @GetMapping("/get-account-manager")
+    public ResponseEntity<AccountManager> getAccountManager( @RequestParam String accountCode){
+        AccountManager accountManager = userService.getAccountManager(accountCode);
+        return new ResponseEntity<>(accountManager,HttpStatus.OK);
+    }
     @PostMapping("/deactivate-user")
     public ResponseEntity<Void> deactivateUser(@RequestParam String email){
         userService.deleteUser(email);

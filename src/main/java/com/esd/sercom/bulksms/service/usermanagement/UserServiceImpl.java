@@ -104,6 +104,12 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public AccountManager getAccountManager(String accountCode) {
+        Optional<AccountManager> byAccountCode =  accountManagerRepo.findByAccountCode(accountCode);
+        return byAccountCode.orElse(null);
+    }
+
+    @Override
     public UserDetails forgotPassword(String email) {
         if(!StringUtils.hasText(email)) throw new BadRequestException("Please provide your email address");
         UserDetails user = this.getUser(email);

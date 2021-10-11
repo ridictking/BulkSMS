@@ -58,10 +58,11 @@ public class UagService {
                 dto.setRollOverFlag(0);
             }
         }
-        long noOfSms = calculateNumberOfSms(dto);
+        int noOfSms = calculateNumberOfSms(dto) == 0 ? 20 : calculateNumberOfSms(dto);
         //ResponseEntity<UagTransactionModificationDTO> modify = uagClient.modify(dto);
         transactionEntity.setStatus(Status.SUCCESSFUL);
-        logger.info("Modify data to be persisted: "+transactionEntity.toString());
+        transactionEntity.setNumberOfSms(noOfSms);
+        logger.info("Modify data to be persisted: "+ transactionEntity);
         UagTransactionEntity save = uagTransactionRepo.save(transactionEntity);
         dto.setCorrelationId(save.getCorrelationId());
         notifyStakeholder();
@@ -69,7 +70,7 @@ public class UagService {
     }
 
     //Todo Calculate no of sms
-    private long calculateNumberOfSms(UagTransactionModificationDTO dto) {
+    private int calculateNumberOfSms(UagTransactionModificationDTO dto) {
 
         return 0;
     }
@@ -129,6 +130,12 @@ public class UagService {
         bulkSmsPricing.setPromotionalPricePerSms(pricing.getPromotionalPricePerSms());
         bulkSmsPricing.setTransactionalPricePerSms(pricing.getTransactionalPricePerSms());
         smsPricingRepo.save(bulkSmsPricing);
+    }
+    public void webHookV2(String trxRef, String transactionId) {
+        //PaymentRequest request = paymentRepo.findByTransactionReference(trxRef);
+        //uagTransactionRepo.
+        //modify()
+
     }
 
     //Todo endpoint to update and reload cache pricing unit
