@@ -19,6 +19,7 @@ public class AccountManager {
     @NotNull
     private String emailAddress;
     @NotNull
+    @Column(unique = true)
     private String accountCode;
 
     public long getId() {
