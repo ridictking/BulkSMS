@@ -20,7 +20,7 @@ spec:
         - env:
             - name: DATASOURCE_URL
               value: jdbc:oracle:thin:@//10.160.151.10:1521/BIPRODDB
-          image: acrsercomcloud.azurecr.io/bulksms-prod:596
+          image: acrsercomcloud.azurecr.io/bulksms-prod:604
           imagePullPolicy: IfNotPresent
           name: bulksms-backend
           ports:
