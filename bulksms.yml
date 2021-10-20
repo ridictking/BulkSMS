@@ -20,7 +20,7 @@ spec:
         - env:
             - name: DATASOURCE_URL
               value: jdbc:oracle:thin:@//10.160.151.10:1521/BIPRODDB
-          image: acrsercomcloud.azurecr.io/bulksms-prod:604
+          image: ACRSercomCloud.azurecr.io/bulksms-prod:641
           imagePullPolicy: IfNotPresent
           name: bulksms-backend
           ports:
@@ -28,6 +28,8 @@ spec:
               protocol: TCP
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
+      imagePullSecrets:
+        - name: acr-secret
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
